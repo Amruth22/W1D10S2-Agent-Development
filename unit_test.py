@@ -143,10 +143,16 @@ class TestAgentInitialization(unittest.TestCase):
     @patch('google.genai.Client')
     def test_directories_created(self, mock_client):
         """Test that required directories are created"""
+        # Agent should create directories based on current config values
         agent = LangChainResearchAgent()
         
-        self.assertTrue(os.path.exists(config.REPORTS_DIR), "Reports directory not created")
-        self.assertTrue(os.path.exists(config.DATA_DIR), "Data directory not created")
+        # Check that directories exist at the configured paths
+        self.assertTrue(os.path.exists(config.REPORTS_DIR), f"Reports directory not created at {config.REPORTS_DIR}")
+        self.assertTrue(os.path.exists(config.DATA_DIR), f"Data directory not created at {config.DATA_DIR}")
+        
+        # Verify directories are actually the temp directories we set up
+        self.assertIn(self.temp_dir, config.REPORTS_DIR, "Reports directory not using temp path")
+        self.assertIn(self.temp_dir, config.DATA_DIR, "Data directory not using temp path")
 
 
 class TestToolExecution(unittest.TestCase):
