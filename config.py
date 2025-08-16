@@ -1,7 +1,7 @@
 # Configuration for LangChain Research Agent
 
 # Gemini API Configuration
-GEMINI_API_KEY = "AIzaSyAWn6-q3JfBBg_bV5ujvz_lGzC4O0oahZA"
+GEMINI_API_KEY = ""
 GEMINI_MODEL = "gemini-2.5-flash"
 
 # Agent Configuration
