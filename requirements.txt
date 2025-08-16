@@ -3,3 +3,10 @@ langchain
 langchain-community
 langchain-core
 langchain-google-genai
+fastapi
+uvicorn[standard]
+aio-pika
+celery[redis]
+redis
+pydantic
+python-multipart
