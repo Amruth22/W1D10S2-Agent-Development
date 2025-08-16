@@ -1,45 +1,5 @@
-# FastAPI + RabbitMQ Research Agent Dockerfile
-FROM python:3.11-slim
-
-# Set working directory
-WORKDIR /app
-
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PYTHONPATH=/app
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements first for better caching
-COPY requirements.txt .
-
-# Install Python dependencies
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
-# Copy application code
-COPY . .
-
-# Create directories for reports and data
-RUN mkdir -p reports data
-
-# Create non-root user for security
-RUN useradd --create-home --shell /bin/bash app && \
-    chown -R app:app /app
-USER app
-
-# Expose port
-EXPOSE 8000
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
-
-# Default command (can be overridden)
-CMD ["python", "run_api.py", "server"]
+# Dockerfile removed - not needed for local development
+# For local setup:
+# 1. Install Python dependencies: pip install -r requirements.txt
+# 2. Install RabbitMQ locally
+# 3. Run the API: python run_api.py server
