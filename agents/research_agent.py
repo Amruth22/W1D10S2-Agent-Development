@@ -133,7 +133,9 @@ class LangChainResearchAgent:
     
     def _ensure_directories(self):
         """Create necessary directories"""
-        for directory in [REPORTS_DIR, DATA_DIR]:
+        # Import config values at runtime to get current values
+        from config import REPORTS_DIR as current_reports_dir, DATA_DIR as current_data_dir
+        for directory in [current_reports_dir, current_data_dir]:
             if not os.path.exists(directory):
                 os.makedirs(directory)
     
@@ -209,13 +211,14 @@ class LangChainResearchAgent:
                             
                             print(f"[FILE TOOL] Creating report '{title}'")
                             
-                            # Create reports directory
-                            os.makedirs(REPORTS_DIR, exist_ok=True)
+                            # Create reports directory using current config
+                            from config import REPORTS_DIR as current_reports_dir
+                            os.makedirs(current_reports_dir, exist_ok=True)
                             
                             # Generate filename
                             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                             filename = f"{title.replace(' ', '_')}_{timestamp}.md"
-                            filepath = os.path.join(REPORTS_DIR, filename)
+                            filepath = os.path.join(current_reports_dir, filename)
                             
                             # Create report
                             report_content = f"""# {title}
@@ -354,7 +357,9 @@ Think step by step about how to best research this topic.
         """List files generated during research"""
         files_info = []
         
-        for directory in [REPORTS_DIR, DATA_DIR]:
+        # Import config values at runtime to get current values
+        from config import REPORTS_DIR as current_reports_dir, DATA_DIR as current_data_dir
+        for directory in [current_reports_dir, current_data_dir]:
             if os.path.exists(directory):
                 files = os.listdir(directory)
                 if files:

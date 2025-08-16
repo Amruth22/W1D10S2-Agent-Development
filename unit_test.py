@@ -50,7 +50,8 @@ class TestGeminiLLMIntegration(unittest.TestCase):
     
     def setUp(self):
         """Set up test fixtures"""
-        self.llm = GeminiLLM()
+        with patch('agents.research_agent.genai.Client'):
+            self.llm = GeminiLLM()
     
     def test_gemini_llm_initialization(self):
         """Test GeminiLLM wrapper initializes correctly"""
@@ -78,10 +79,15 @@ class TestGeminiLLMIntegration(unittest.TestCase):
     
     def test_gemini_error_handling(self):
         """Test Gemini LLM error handling"""
-        with patch.object(self.llm, 'client') as mock_client:
+        # Test error handling by patching the genai.Client class directly
+        with patch('agents.research_agent.genai.Client') as mock_client_class:
+            mock_client = MagicMock()
             mock_client.models.generate_content_stream.side_effect = Exception("API Error")
+            mock_client_class.return_value = mock_client
             
-            response = self.llm._call("Test prompt")
+            # Create new LLM instance with mocked client
+            llm = GeminiLLM()
+            response = llm._call("Test prompt")
             
             self.assertIn("Error calling Gemini", response, "Error not properly handled")
 
@@ -137,10 +143,16 @@ class TestAgentInitialization(unittest.TestCase):
     @patch('google.genai.Client')
     def test_directories_created(self, mock_client):
         """Test that required directories are created"""
+        # Agent should create directories based on current config values
         agent = LangChainResearchAgent()
         
-        self.assertTrue(os.path.exists(config.REPORTS_DIR), "Reports directory not created")
-        self.assertTrue(os.path.exists(config.DATA_DIR), "Data directory not created")
+        # Check that directories exist at the configured paths
+        self.assertTrue(os.path.exists(config.REPORTS_DIR), f"Reports directory not created at {config.REPORTS_DIR}")
+        self.assertTrue(os.path.exists(config.DATA_DIR), f"Data directory not created at {config.DATA_DIR}")
+        
+        # Verify directories are actually the temp directories we set up
+        self.assertIn(self.temp_dir, config.REPORTS_DIR, "Reports directory not using temp path")
+        self.assertIn(self.temp_dir, config.DATA_DIR, "Data directory not using temp path")
 
 
 class TestToolExecution(unittest.TestCase):
@@ -201,10 +213,13 @@ class TestToolExecution(unittest.TestCase):
         self.assertIn("SUCCESS", result, "File creation failed")
         self.assertIn("Unit Test Report", result, "Report title not in result")
         
-        # Verify file actually exists
+        # Verify file actually exists in the configured directory
+        self.assertTrue(os.path.exists(config.REPORTS_DIR), f"Reports directory {config.REPORTS_DIR} does not exist")
+        
         reports_files = os.listdir(config.REPORTS_DIR)
         test_files = [f for f in reports_files if f.startswith("Unit_Test_Report_")]
-        self.assertGreater(len(test_files), 0, "Test report file not created")
+        
+        self.assertGreater(len(test_files), 0, f"Test report file not created in {config.REPORTS_DIR}. Files found: {reports_files}. Tool result: {result}")
     
     @patch('google.genai.Client')
     def test_web_search_tool_structure(self, mock_client):
