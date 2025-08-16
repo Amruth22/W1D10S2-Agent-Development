@@ -1,6 +1,0 @@
-# Docker Compose file removed - not needed for local development
-# Use manual setup instead:
-# 1. Install RabbitMQ locally: sudo apt-get install rabbitmq-server
-# 2. Start RabbitMQ: sudo systemctl start rabbitmq-server
-# 3. Run API: python run_api.py server
-# 4. Run consumer: python run_api.py consumer
