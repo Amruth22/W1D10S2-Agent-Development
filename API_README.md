@@ -1,10 +1,10 @@
-# 🚀 FastAPI + RabbitMQ Research Agent API
+# FastAPI + RabbitMQ Research Agent API
 
 **Professional AI Research Assistant with Asynchronous Processing**
 
 Transform your LangChain Research Agent into a **production-ready, scalable API service** with FastAPI and RabbitMQ integration.
 
-## 🎯 **Architecture Overview**
+## Architecture Overview
 
 ```
 Client Request → FastAPI → RabbitMQ → LangChain Agent → Response
@@ -12,34 +12,34 @@ Client Request → FastAPI → RabbitMQ → LangChain Agent → Response
    REST API    Queue Tasks  Process    Research     Store Results
 ```
 
-### **Key Components:**
+### Key Components:
 - **FastAPI**: High-performance REST API with automatic documentation
 - **RabbitMQ**: Message queue for asynchronous task processing
 - **LangChain Agent**: Your existing research agent (unchanged)
 - **Redis**: Task result storage and caching
 - **Docker**: Containerized deployment
 
-## ✨ **Features**
+## Features
 
-### **🔥 Production-Ready**
-- ✅ **Asynchronous Processing** - Non-blocking API responses
-- ✅ **Horizontal Scaling** - Multiple consumer workers
-- ✅ **Message Persistence** - Reliable task queuing
-- ✅ **Health Monitoring** - Built-in health checks
-- ✅ **Auto Documentation** - Interactive API docs
-- ✅ **Docker Support** - Easy deployment
+### Production-Ready
+- Asynchronous Processing - Non-blocking API responses
+- Horizontal Scaling - Multiple consumer workers
+- Message Persistence - Reliable task queuing
+- Health Monitoring - Built-in health checks
+- Auto Documentation - Interactive API docs
+- Local Development - Easy setup
 
-### **🎛️ Advanced Capabilities**
-- ✅ **Task Status Tracking** - Real-time progress updates
-- ✅ **Priority Queues** - Urgent vs normal tasks
-- ✅ **WebSocket Support** - Live status updates
-- ✅ **File Generation** - Research reports with timestamps
-- ✅ **Error Handling** - Robust failure management
-- ✅ **CORS Support** - Cross-origin requests
+### Advanced Capabilities
+- Task Status Tracking - Real-time progress updates
+- Priority Queues - Urgent vs normal tasks
+- WebSocket Support - Live status updates
+- File Generation - Research reports with timestamps
+- Error Handling - Robust failure management
+- CORS Support - Cross-origin requests
 
-## 🚀 **Quick Start**
+## Quick Start
 
-### **1. Prerequisites**
+### 1. Prerequisites
 ```bash
 # Install dependencies
 pip install -r requirements.txt
@@ -47,11 +47,10 @@ pip install -r requirements.txt
 # Install RabbitMQ (Ubuntu/Debian)
 sudo apt-get install rabbitmq-server
 
-# Or use Docker
-docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.12-management
+# Or download from: https://www.rabbitmq.com/download.html
 ```
 
-### **2. Configuration**
+### 2. Configuration
 ```bash
 # Copy environment template
 cp .env.example .env
@@ -60,36 +59,33 @@ cp .env.example .env
 nano .env
 ```
 
-**Required Settings:**
+Required Settings:
 ```env
 GEMINI_API_KEY=your-gemini-api-key-here
 RABBITMQ_HOST=localhost
 RABBITMQ_PORT=5672
 ```
 
-### **3. Start the API**
+### 3. Start the API
 ```bash
 # Method 1: Direct Python
 python run_api.py server
 
-# Method 2: Docker Compose (Recommended)
-docker-compose up -d
-
-# Method 3: Individual components
+# Method 2: Individual components
 python run_api.py server    # Terminal 1: API Server
 python run_api.py consumer  # Terminal 2: Task Consumer
 ```
 
-### **4. Access the API**
+### 4. Access the API
 - **API Server**: http://localhost:8000
 - **Interactive Docs**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 - **Health Check**: http://localhost:8000/health
 - **RabbitMQ Management**: http://localhost:15672 (guest/guest)
 
-## 📚 **API Usage Examples**
+## API Usage Examples
 
-### **Submit Research Request**
+### Submit Research Request
 ```bash
 curl -X POST "http://localhost:8000/research" \
   -H "Content-Type: application/json" \
@@ -101,7 +97,7 @@ curl -X POST "http://localhost:8000/research" \
   }'
 ```
 
-**Response:**
+Response:
 ```json
 {
   "task_id": "123e4567-e89b-12d3-a456-426614174000",
@@ -111,12 +107,12 @@ curl -X POST "http://localhost:8000/research" \
 }
 ```
 
-### **Check Task Status**
+### Check Task Status
 ```bash
 curl "http://localhost:8000/research/123e4567-e89b-12d3-a456-426614174000/status"
 ```
 
-**Response:**
+Response:
 ```json
 {
   "task_id": "123e4567-e89b-12d3-a456-426614174000",
@@ -127,12 +123,12 @@ curl "http://localhost:8000/research/123e4567-e89b-12d3-a456-426614174000/status
 }
 ```
 
-### **Get Research Results**
+### Get Research Results
 ```bash
 curl "http://localhost:8000/research/123e4567-e89b-12d3-a456-426614174000"
 ```
 
-**Response:**
+Response:
 ```json
 {
   "task_id": "123e4567-e89b-12d3-a456-426614174000",
@@ -145,7 +141,7 @@ curl "http://localhost:8000/research/123e4567-e89b-12d3-a456-426614174000"
 }
 ```
 
-## 🐍 **Python Client Example**
+## Python Client Example
 
 ```python
 import requests
