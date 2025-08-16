@@ -6,7 +6,6 @@ langchain-google-genai
 fastapi
 uvicorn[standard]
 aio-pika
-celery[redis]
-redis
 pydantic
 python-multipart
+websockets
