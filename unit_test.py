@@ -213,22 +213,13 @@ class TestToolExecution(unittest.TestCase):
         self.assertIn("SUCCESS", result, "File creation failed")
         self.assertIn("Unit Test Report", result, "Report title not in result")
         
-        # Verify file actually exists - check both temp directory and actual reports directory
-        # The tool might create files in the original REPORTS_DIR location
-        test_files = []
+        # Verify file actually exists in the configured directory
+        self.assertTrue(os.path.exists(config.REPORTS_DIR), f"Reports directory {config.REPORTS_DIR} does not exist")
         
-        # Check temp directory first
-        if os.path.exists(config.REPORTS_DIR):
-            reports_files = os.listdir(config.REPORTS_DIR)
-            test_files.extend([f for f in reports_files if f.startswith("Unit_Test_Report_")])
+        reports_files = os.listdir(config.REPORTS_DIR)
+        test_files = [f for f in reports_files if f.startswith("Unit_Test_Report_")]
         
-        # Also check if files were created in the original reports directory
-        original_reports_dir = "reports"
-        if os.path.exists(original_reports_dir):
-            original_files = os.listdir(original_reports_dir)
-            test_files.extend([f for f in original_files if f.startswith("Unit_Test_Report_")])
-        
-        self.assertGreater(len(test_files), 0, f"Test report file not created. Checked: {config.REPORTS_DIR} and {original_reports_dir}. Result indicates: {result}")
+        self.assertGreater(len(test_files), 0, f"Test report file not created in {config.REPORTS_DIR}. Files found: {reports_files}. Tool result: {result}")
     
     @patch('google.genai.Client')
     def test_web_search_tool_structure(self, mock_client):
