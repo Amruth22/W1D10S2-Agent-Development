@@ -58,7 +58,7 @@ class ResearchTaskPublisher:
     async def connect(self):
         """Establish connection to RabbitMQ"""
         try:
-            print(f"🔌 Connecting to RabbitMQ at {self.config.host}:{self.config.port}...")
+            print(f"Connecting to RabbitMQ at {self.config.host}:{self.config.port}...")
             
             self.connection = await connect_robust(
                 self.config.connection_url,
@@ -82,10 +82,10 @@ class ResearchTaskPublisher:
                 durable=True
             )
             
-            print("✅ RabbitMQ publisher connected successfully!")
+            print("RabbitMQ publisher connected successfully!")
             
         except Exception as e:
-            print(f"❌ Failed to connect to RabbitMQ: {e}")
+            print(f"Failed to connect to RabbitMQ: {e}")
             raise
     
     async def publish_research_task(self, task_data: Dict[str, Any]):
@@ -116,17 +116,17 @@ class ResearchTaskPublisher:
                 routing_key=self.config.research_queue
             )
             
-            print(f"📤 Published research task: {task_data['task_id']}")
+            print(f"Published research task: {task_data['task_id']}")
             
         except Exception as e:
-            print(f"❌ Failed to publish task: {e}")
+            print(f"Failed to publish task: {e}")
             raise
     
     async def close(self):
         """Close RabbitMQ connection"""
         if self.connection and not self.connection.is_closed:
             await self.connection.close()
-            print("🔌 RabbitMQ publisher connection closed")
+            print("RabbitMQ publisher connection closed")
 
 
 class ResearchTaskConsumer:
@@ -146,7 +146,7 @@ class ResearchTaskConsumer:
     async def connect(self):
         """Establish connection to RabbitMQ"""
         try:
-            print(f"🔌 Connecting consumer to RabbitMQ at {self.config.host}:{self.config.port}...")
+            print(f"Connecting consumer to RabbitMQ at {self.config.host}:{self.config.port}...")
             
             self.connection = await connect_robust(
                 self.config.connection_url,
@@ -175,10 +175,10 @@ class ResearchTaskConsumer:
             # Initialize research agent
             self.agent = LangChainResearchAgent()
             
-            print("✅ RabbitMQ consumer connected successfully!")
+            print("RabbitMQ consumer connected successfully!")
             
         except Exception as e:
-            print(f"❌ Failed to connect consumer to RabbitMQ: {e}")
+            print(f"Failed to connect consumer to RabbitMQ: {e}")
             raise
     
     async def start_consuming(self):
@@ -186,7 +186,7 @@ class ResearchTaskConsumer:
         if not self.queue:
             await self.connect()
         
-        print("🎯 Starting to consume research tasks...")
+        print("Starting to consume research tasks...")
         
         async def process_message(message: aio_pika.IncomingMessage):
             async with message.process():
@@ -194,13 +194,13 @@ class ResearchTaskConsumer:
         
         await self.queue.consume(process_message)
         
-        print("🔄 Consumer is running. Waiting for research tasks...")
+        print("Consumer is running. Waiting for research tasks...")
         
         # Keep the consumer running
         try:
             await asyncio.Future()  # Run forever
         except KeyboardInterrupt:
-            print("⏹️  Consumer stopped by user")
+            print("Consumer stopped by user")
     
     async def process_research_task(self, message: aio_pika.IncomingMessage):
         """
@@ -215,7 +215,7 @@ class ResearchTaskConsumer:
             task_id = task_data["task_id"]
             query = task_data["query"]
             
-            print(f"🔬 Processing research task {task_id}: {query[:50]}...")
+            print(f"Processing research task {task_id}: {query[:50]}...")
             
             # Update task status to processing
             if self.result_callback:
@@ -242,11 +242,11 @@ class ResearchTaskConsumer:
             if self.result_callback:
                 await self.result_callback(task_id, result_data)
             
-            print(f"✅ Research task {task_id} completed successfully")
+            print(f"Research task {task_id} completed successfully")
             
         except Exception as e:
             error_msg = str(e)
-            print(f"❌ Research task failed: {error_msg}")
+            print(f"Research task failed: {error_msg}")
             
             # Store error result
             if self.result_callback:
@@ -260,7 +260,7 @@ class ResearchTaskConsumer:
         """Close RabbitMQ connection"""
         if self.connection and not self.connection.is_closed:
             await self.connection.close()
-            print("🔌 RabbitMQ consumer connection closed")
+            print("RabbitMQ consumer connection closed")
 
 
 class ResearchTaskManager:
@@ -342,7 +342,7 @@ class ResearchTaskManager:
 # Standalone consumer script
 async def run_consumer():
     """Run standalone consumer for processing research tasks"""
-    print("🚀 Starting RabbitMQ Research Task Consumer...")
+    print("Starting RabbitMQ Research Task Consumer...")
     
     # In-memory storage for demo (in production, use Redis/Database)
     task_results = {}
@@ -350,14 +350,14 @@ async def run_consumer():
     async def store_result(task_id: str, result_data: Dict[str, Any]):
         """Store task result"""
         task_results[task_id] = result_data
-        print(f"💾 Stored result for task {task_id}: {result_data['status']}")
+        print(f"Stored result for task {task_id}: {result_data['status']}")
     
     consumer = ResearchTaskConsumer(result_callback=store_result)
     
     try:
         await consumer.start_consuming()
     except KeyboardInterrupt:
-        print("⏹️  Consumer stopped")
+        print("Consumer stopped")
     finally:
         await consumer.close()
 
