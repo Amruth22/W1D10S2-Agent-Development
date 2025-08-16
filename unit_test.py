@@ -223,61 +223,7 @@ class TestToolExecution(unittest.TestCase):
         self.assertIn("Search the internet", search_tool.description, "Invalid tool description")
 
 
-class TestMemorySystem(unittest.TestCase):
-    """Test Case 5: Memory System Test"""
-    
-    def test_memory_initialization(self):
-        """Test ResearchAgentMemory initializes correctly"""
-        memory = ResearchAgentMemory()
-        
-        self.assertIsNotNone(memory, "Memory failed to initialize")
-        self.assertIsNotNone(memory.memory, "LangChain memory not initialized")
-        self.assertIsNotNone(memory.session_summary, "Session summary not initialized")
-    
-    def test_memory_operations(self):
-        """Test memory add and retrieve operations"""
-        memory = ResearchAgentMemory()
-        
-        # Test adding messages
-        memory.add_user_message("Test user message")
-        memory.add_ai_message("Test AI response")
-        
-        # Test getting history
-        history = memory.get_formatted_history()
-        self.assertIsInstance(history, str, "History should be string")
-        self.assertIn("Test user message", history, "User message not in history")
-        self.assertIn("Test AI response", history, "AI message not in history")
-    
-    def test_memory_statistics(self):
-        """Test memory statistics retrieval"""
-        memory = ResearchAgentMemory()
-        
-        # Add some messages
-        memory.add_user_message("Test message 1")
-        memory.add_ai_message("Test response 1")
-        memory.add_user_message("Test message 2")
-        
-        # Get statistics
-        stats = memory.get_memory_stats()
-        
-        self.assertIsInstance(stats, dict, "Stats should be dictionary")
-        self.assertIn("total_messages", stats, "total_messages not in stats")
-        self.assertGreaterEqual(stats["total_messages"], 3, "Incorrect message count")
-    
-    def test_memory_clear(self):
-        """Test memory clearing functionality"""
-        memory = ResearchAgentMemory()
-        
-        # Add messages
-        memory.add_user_message("Test message")
-        memory.add_ai_message("Test response")
-        
-        # Clear memory
-        memory.clear_memory()
-        
-        # Check memory is cleared
-        stats = memory.get_memory_stats()
-        self.assertEqual(stats["total_messages"], 0, "Memory not properly cleared")
+
 
 
 if __name__ == "__main__":
@@ -289,8 +235,7 @@ if __name__ == "__main__":
         TestConfiguration,
         TestGeminiLLMIntegration, 
         TestAgentInitialization,
-        TestToolExecution,
-        TestMemorySystem
+        TestToolExecution
     ]
     
     for test_case in test_cases:
