@@ -177,9 +177,9 @@ if status["status"] == "completed":
     print(f"Research completed: {results['result'][:100]}...")
 ```
 
-## 🔧 **Advanced Configuration**
+## Advanced Configuration
 
-### **Environment Variables**
+### Environment Variables
 ```env
 # Production Settings
 ENVIRONMENT=production
@@ -197,19 +197,15 @@ RABBITMQ_USERNAME=research_user
 RABBITMQ_PASSWORD=secure_password
 ```
 
-### **Docker Compose Production**
+### Production Setup
 ```bash
-# Start with production profile
-docker-compose --profile production up -d
-
-# Scale consumers
-docker-compose up -d --scale consumer=5
-
-# View logs
-docker-compose logs -f api consumer
+# Start multiple consumers for scaling
+python run_api.py consumer  # Terminal 1
+python run_api.py consumer  # Terminal 2
+python run_api.py consumer  # Terminal 3
 ```
 
-## 📊 **API Endpoints**
+## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -222,36 +218,36 @@ docker-compose logs -f api consumer
 | `DELETE` | `/research/{task_id}` | Cancel task |
 | `WS` | `/ws/{task_id}` | WebSocket status updates |
 
-## 🏗️ **Architecture Benefits**
+## Architecture Benefits
 
-### **🚀 Scalability**
+### Scalability
 - **Horizontal Scaling**: Add more consumer workers
 - **Load Distribution**: RabbitMQ distributes tasks evenly
 - **Resource Isolation**: API and processing separated
 
-### **🔒 Reliability**
+### Reliability
 - **Message Persistence**: Tasks survive system restarts
 - **Error Recovery**: Failed tasks can be retried
 - **Health Monitoring**: Built-in health checks
 
-### **⚡ Performance**
+### Performance
 - **Non-blocking**: API responds immediately
 - **Concurrent Processing**: Multiple tasks simultaneously
 - **Efficient Queuing**: RabbitMQ handles high throughput
 
-### **🛠️ Maintainability**
+### Maintainability
 - **Modular Design**: Clear separation of concerns
 - **Docker Support**: Easy deployment and scaling
 - **Configuration Management**: Environment-based config
 
-## 🔍 **Monitoring & Debugging**
+## Monitoring & Debugging
 
-### **RabbitMQ Management UI**
-- **URL**: http://localhost:15672
-- **Credentials**: guest/guest (development)
-- **Features**: Queue monitoring, message tracking, performance metrics
+### RabbitMQ Management UI
+- URL: http://localhost:15672
+- Credentials: guest/guest (development)
+- Features: Queue monitoring, message tracking, performance metrics
 
-### **Health Checks**
+### Health Checks
 ```bash
 # API Health
 curl http://localhost:8000/health
@@ -259,27 +255,20 @@ curl http://localhost:8000/health
 # RabbitMQ Health
 curl http://localhost:15672/api/healthchecks/node
 
-# Container Health
-docker-compose ps
+# Process Status
+ps aux | grep python
 ```
 
-### **Logs**
+### Logs
 ```bash
-# API Logs
-docker-compose logs -f api
-
-# Consumer Logs
-docker-compose logs -f consumer
-
-# RabbitMQ Logs
-docker-compose logs -f rabbitmq
+# Check application logs in terminal output
 ```
 
-## 🚨 **Troubleshooting**
+## Troubleshooting
 
-### **Common Issues**
+### Common Issues
 
-**1. RabbitMQ Connection Failed**
+1. RabbitMQ Connection Failed
 ```bash
 # Check RabbitMQ status
 sudo systemctl status rabbitmq-server
@@ -287,25 +276,25 @@ sudo systemctl status rabbitmq-server
 # Restart RabbitMQ
 sudo systemctl restart rabbitmq-server
 
-# Check Docker container
-docker-compose logs rabbitmq
+# Check RabbitMQ logs
+sudo journalctl -u rabbitmq-server
 ```
 
-**2. Tasks Stuck in Queue**
+2. Tasks Stuck in Queue
 ```bash
-# Check consumer status
-docker-compose logs consumer
+# Check consumer process
+ps aux | grep "run_api.py consumer"
 
-# Restart consumers
-docker-compose restart consumer
+# Restart consumer
+# Stop with Ctrl+C and restart: python run_api.py consumer
 
 # Check queue status in RabbitMQ UI
 ```
 
-**3. API Not Responding**
+3. API Not Responding
 ```bash
-# Check API logs
-docker-compose logs api
+# Check API process
+ps aux | grep "run_api.py server"
 
 # Verify port binding
 netstat -tlnp | grep 8000
@@ -314,9 +303,9 @@ netstat -tlnp | grep 8000
 curl http://localhost:8000/health
 ```
 
-## 🔐 **Security Considerations**
+## Security Considerations
 
-### **Production Security**
+### Production Security
 ```env
 # Enable API key authentication
 REQUIRE_API_KEY=true
@@ -330,21 +319,21 @@ RABBITMQ_USERNAME=secure_user
 RABBITMQ_PASSWORD=complex_password
 ```
 
-### **Network Security**
+### Network Security
 - Use HTTPS in production
 - Implement rate limiting
 - Set up firewall rules
 - Use VPN for internal services
 
-## 📈 **Performance Tuning**
+## Performance Tuning
 
-### **Scaling Guidelines**
-- **API Instances**: 1-2 per CPU core
-- **Consumer Workers**: 2-4 per CPU core
-- **RabbitMQ**: Dedicated server for high load
-- **Redis**: Use Redis Cluster for large datasets
+### Scaling Guidelines
+- API Instances: 1-2 per CPU core
+- Consumer Workers: 2-4 per CPU core
+- RabbitMQ: Dedicated server for high load
+- Storage: Use database for large datasets
 
-### **Optimization Tips**
+### Optimization Tips
 ```python
 # Increase worker processes
 uvicorn.run("api.main:app", workers=4)
@@ -356,23 +345,23 @@ await channel.set_qos(prefetch_count=10)
 # Implement result caching
 ```
 
-## 🎯 **Use Cases**
+## Use Cases
 
-### **Perfect For:**
-- **Research Platforms** - Academic and commercial research
-- **Content Generation** - Automated report creation
-- **Data Analysis** - Large-scale information processing
-- **Microservices** - Part of larger application ecosystem
-- **API Services** - Expose research capabilities to other systems
+### Perfect For:
+- Research Platforms - Academic and commercial research
+- Content Generation - Automated report creation
+- Data Analysis - Large-scale information processing
+- Microservices - Part of larger application ecosystem
+- API Services - Expose research capabilities to other systems
 
-### **Example Applications:**
+### Example Applications:
 - Market research automation
 - Academic paper analysis
 - Competitive intelligence
 - Content creation pipelines
 - Business intelligence systems
 
-## 🤝 **Contributing**
+## Contributing
 
 1. Fork the repository
 2. Create feature branch: `git checkout -b feature/amazing-feature`
@@ -380,12 +369,12 @@ await channel.set_qos(prefetch_count=10)
 4. Push to branch: `git push origin feature/amazing-feature`
 5. Open Pull Request
 
-## 📄 **License**
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
 
-**🚀 Transform your research agent into a production-ready API service!**
+Transform your research agent into a production-ready API service!
 
-*Built with FastAPI, RabbitMQ, and LangChain for maximum performance and scalability.*
+Built with FastAPI, RabbitMQ, and LangChain for maximum performance and scalability.
