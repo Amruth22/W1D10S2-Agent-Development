@@ -52,16 +52,16 @@ async def startup_event():
     try:
         task_publisher = ResearchTaskPublisher()
         await task_publisher.connect()
-        print("✅ FastAPI + RabbitMQ Research Agent API started successfully!")
-        print("📚 Available endpoints:")
-        print("  • POST /research - Submit research request")
-        print("  • GET /research/{task_id} - Get research results")
-        print("  • GET /research/{task_id}/status - Get task status")
-        print("  • GET /health - Health check")
-        print("  • GET /docs - API documentation")
+        print("FastAPI + RabbitMQ Research Agent API started successfully!")
+        print("Available endpoints:")
+        print("  POST /research - Submit research request")
+        print("  GET /research/{task_id} - Get research results")
+        print("  GET /research/{task_id}/status - Get task status")
+        print("  GET /health - Health check")
+        print("  GET /docs - API documentation")
     except Exception as e:
-        print(f"❌ Failed to initialize RabbitMQ: {e}")
-        print("⚠️  API will run in direct mode (no queue)")
+        print(f"Failed to initialize RabbitMQ: {e}")
+        print("API will run in direct mode (no queue)")
 
 
 @app.on_event("shutdown")
@@ -70,7 +70,7 @@ async def shutdown_event():
     global task_publisher
     if task_publisher:
         await task_publisher.close()
-    print("👋 FastAPI Research Agent API shutdown complete")
+    print("FastAPI Research Agent API shutdown complete")
 
 
 @app.get("/")
@@ -139,11 +139,11 @@ async def submit_research_request(request: ResearchRequest):
         # Publish to RabbitMQ if available, otherwise process directly
         if task_publisher and task_publisher.connection:
             await task_publisher.publish_research_task(task_data)
-            print(f"📤 Research task {task_id} queued: {request.query[:50]}...")
+            print(f"Research task {task_id} queued: {request.query[:50]}...")
         else:
             # Fallback: process directly in background
             asyncio.create_task(process_research_direct(task_id, request.query))
-            print(f"🔄 Research task {task_id} processing directly: {request.query[:50]}...")
+            print(f"Research task {task_id} processing directly: {request.query[:50]}...")
         
         return ResearchResponse(
             task_id=task_id,
@@ -293,7 +293,7 @@ async def process_research_direct(task_id: str, query: str):
             "files_generated": files_generated.split('\n') if files_generated else []
         })
         
-        print(f"✅ Research task {task_id} completed successfully")
+        print(f"Research task {task_id} completed successfully")
         
     except Exception as e:
         # Update task with error
@@ -303,7 +303,7 @@ async def process_research_direct(task_id: str, query: str):
             "completed_at": datetime.now().isoformat()
         })
         
-        print(f"❌ Research task {task_id} failed: {str(e)}")
+        print(f"Research task {task_id} failed: {str(e)}")
 
 
 def get_task_progress(status: str) -> int:
