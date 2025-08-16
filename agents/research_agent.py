@@ -211,13 +211,14 @@ class LangChainResearchAgent:
                             
                             print(f"[FILE TOOL] Creating report '{title}'")
                             
-                            # Create reports directory
-                            os.makedirs(REPORTS_DIR, exist_ok=True)
+                            # Create reports directory using current config
+                            from config import REPORTS_DIR as current_reports_dir
+                            os.makedirs(current_reports_dir, exist_ok=True)
                             
                             # Generate filename
                             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                             filename = f"{title.replace(' ', '_')}_{timestamp}.md"
-                            filepath = os.path.join(REPORTS_DIR, filename)
+                            filepath = os.path.join(current_reports_dir, filename)
                             
                             # Create report
                             report_content = f"""# {title}
