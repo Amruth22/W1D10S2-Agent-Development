@@ -50,7 +50,8 @@ class TestGeminiLLMIntegration(unittest.TestCase):
     
     def setUp(self):
         """Set up test fixtures"""
-        self.llm = GeminiLLM()
+        with patch('agents.research_agent.genai.Client'):
+            self.llm = GeminiLLM()
     
     def test_gemini_llm_initialization(self):
         """Test GeminiLLM wrapper initializes correctly"""
@@ -78,10 +79,15 @@ class TestGeminiLLMIntegration(unittest.TestCase):
     
     def test_gemini_error_handling(self):
         """Test Gemini LLM error handling"""
-        with patch.object(self.llm, 'client') as mock_client:
+        # Test error handling by patching the genai.Client class directly
+        with patch('agents.research_agent.genai.Client') as mock_client_class:
+            mock_client = MagicMock()
             mock_client.models.generate_content_stream.side_effect = Exception("API Error")
+            mock_client_class.return_value = mock_client
             
-            response = self.llm._call("Test prompt")
+            # Create new LLM instance with mocked client
+            llm = GeminiLLM()
+            response = llm._call("Test prompt")
             
             self.assertIn("Error calling Gemini", response, "Error not properly handled")
 
