@@ -133,7 +133,9 @@ class LangChainResearchAgent:
     
     def _ensure_directories(self):
         """Create necessary directories"""
-        for directory in [REPORTS_DIR, DATA_DIR]:
+        # Import config values at runtime to get current values
+        from config import REPORTS_DIR as current_reports_dir, DATA_DIR as current_data_dir
+        for directory in [current_reports_dir, current_data_dir]:
             if not os.path.exists(directory):
                 os.makedirs(directory)
     
