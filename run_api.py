@@ -20,11 +20,11 @@ from api.message_queue import run_consumer
 
 def run_api_server():
     """Run the FastAPI server"""
-    print("🚀 Starting FastAPI Research Agent API Server...")
-    print(f"📍 Server will run at: http://{settings.host}:{settings.port}")
-    print(f"📚 API Documentation: http://{settings.host}:{settings.port}/docs")
-    print(f"🔧 Environment: {os.getenv('ENVIRONMENT', 'development')}")
-    print(f"🐰 RabbitMQ: {settings.rabbitmq_host}:{settings.rabbitmq_port}")
+    print("Starting FastAPI Research Agent API Server...")
+    print(f"Server will run at: http://{settings.host}:{settings.port}")
+    print(f"API Documentation: http://{settings.host}:{settings.port}/docs")
+    print(f"Environment: {os.getenv('ENVIRONMENT', 'development')}")
+    print(f"RabbitMQ: {settings.rabbitmq_host}:{settings.rabbitmq_port}")
     print()
     
     uvicorn.run(
@@ -40,9 +40,9 @@ def run_api_server():
 
 def run_consumer_only():
     """Run only the RabbitMQ consumer"""
-    print("🎯 Starting RabbitMQ Research Task Consumer...")
-    print(f"🐰 Connecting to: {settings.rabbitmq_host}:{settings.rabbitmq_port}")
-    print("⏹️  Press Ctrl+C to stop")
+    print("Starting RabbitMQ Research Task Consumer...")
+    print(f"Connecting to: {settings.rabbitmq_host}:{settings.rabbitmq_port}")
+    print("Press Ctrl+C to stop")
     print()
     
     asyncio.run(run_consumer())
@@ -51,7 +51,7 @@ def run_consumer_only():
 def show_help():
     """Show help information"""
     help_text = """
-🔍 LangChain Research Agent API - Startup Options
+LangChain Research Agent API - Startup Options
 
 Usage: python run_api.py [command]
 
@@ -108,7 +108,7 @@ def main():
     elif command == "help":
         show_help()
     else:
-        print(f"❌ Unknown command: {command}")
+        print(f"Unknown command: {command}")
         print("Use 'python run_api.py help' for available commands")
         sys.exit(1)
 
@@ -117,7 +117,7 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\n👋 Goodbye!")
+        print("\nGoodbye!")
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"Error: {e}")
         sys.exit(1)
