@@ -273,12 +273,19 @@ if __name__ == "__main__":
     if result.failures:
         print(f"\nFAILURES:")
         for test, traceback in result.failures:
-            print(f"- {test}: {traceback.split('AssertionError: ')[-1].split('\n')[0]}")
+            # print(f"- {test}: {traceback.split('AssertionError: ')[-1].split('\n')[0]}")
+            # print(f"- {test}: {traceback.split('AssertionError: ')[-1].split('\\n')[0]}")
+            msg = traceback.split("AssertionError: ")[-1].split("\n")[0]
+            print(f"- {test}: {msg}")
+
+
     
     if result.errors:
         print(f"\nERRORS:")
         for test, traceback in result.errors:
-            print(f"- {test}: {traceback.split('\n')[-2]}")
+            msg = traceback.split("\n")[-2]
+            print(f"- {test}: {msg}")
+
     
     # Exit with appropriate code
     exit(0 if result.wasSuccessful() else 1)
