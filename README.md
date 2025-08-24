@@ -43,7 +43,6 @@ pip install -r requirements.txt
 Add your API keys to the `.env` file:
 ```bash
 GEMINI_API_KEY=your-gemini-api-key-here
-TAVILY_API_KEY=your-tavily-api-key-here
 ```
 
 ### 3. **Test the Setup**
@@ -126,7 +125,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
 ```
 
 ### **LangChain Agent Architecture**
