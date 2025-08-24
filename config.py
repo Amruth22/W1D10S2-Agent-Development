@@ -1,8 +1,17 @@
 # Configuration for LangChain Research Agent
 
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
 # Gemini API Configuration
-GEMINI_API_KEY = ""
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 GEMINI_MODEL = "gemini-2.5-flash"
+
+# Tavily API Configuration
+TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
 
 # Agent Configuration
 MAX_ITERATIONS = 10
