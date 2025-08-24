@@ -62,7 +62,7 @@ class TestGeminiLLMIntegration(unittest.TestCase):
     
     @patch('agents.research_agent.genai.Client')
     def test_gemini_api_connection(self, mock_client):
-        """Test Gemini API connection (mocked)"""
+        """Test Gemini API connection (MOCKED - NOT REAL API CALL)"""
         # Mock the streaming response
         mock_chunk = MagicMock()
         mock_chunk.text = "Test response"
@@ -223,7 +223,7 @@ class TestToolExecution(unittest.TestCase):
     
     @patch('google.genai.Client')
     def test_web_search_tool_structure(self, mock_client):
-        """Test web search tool structure (without actual API call)"""
+        """Test web search tool structure (MOCKED - NO REAL SEARCH PERFORMED)"""
         agent = LangChainResearchAgent()
         
         # Find web search tool
@@ -263,7 +263,9 @@ if __name__ == "__main__":
     
     # Print summary
     print(f"\n{'='*50}")
-    print(f"UNIT TEST SUMMARY")
+    print(f"MOCKED UNIT TEST SUMMARY")
+    print(f"⚠️  WARNING: These tests use mocks - NOT real APIs")
+    print(f"For real API testing run: python3 integration_test.py")
     print(f"{'='*50}")
     print(f"Tests run: {result.testsRun}")
     print(f"Failures: {len(result.failures)}")
