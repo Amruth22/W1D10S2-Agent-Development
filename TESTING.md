@@ -4,37 +4,55 @@ This project includes **two different types of tests** to ensure comprehensive c
 
 ## 📋 Test Types Overview
 
-### 🎭 **Mocked Unit Tests** (`unit_test.py`)
-- **Purpose**: Test component structure and basic functionality
+### 🧠 **Smart Unit Tests** (`unit_test.py`) - **RECOMMENDED**
+- **Purpose**: Intelligent testing that adapts to API availability
+- **API Calls**: Real when available, graceful handling when not
+- **Speed**: Fast for non-API components, adaptive for API tests
+- **Use Case**: Primary testing, development, CI/CD, production validation
+
+### 🎭 **Legacy Mocked Tests** (`legacy_mocked_test.py`)
+- **Purpose**: Reference implementation with heavy mocking
 - **API Calls**: All mocked/simulated
 - **Speed**: Fast (no network calls)
-- **Use Case**: Development, CI/CD, structure validation
+- **Use Case**: Reference only - not recommended for actual testing
 
-### 🌐 **Integration Tests** (`integration_test.py`)
-- **Purpose**: Test real API functionality and end-to-end workflows
+### 🌐 **Full Integration Tests** (`integration_test.py`)
+- **Purpose**: Comprehensive real API testing (when quota available)
 - **API Calls**: Real API calls to Gemini and other services
 - **Speed**: Slower (network dependent)
-- **Use Case**: Validation, deployment verification, real functionality testing
+- **Use Case**: Full validation when API quota is available
 
 ## 🚀 Running Tests
 
-### Quick Mocked Tests (No API Keys Required)
+### Smart Unit Tests (Recommended)
 ```bash
 python3 unit_test.py
 ```
 **Output Example:**
 ```
-MOCKED UNIT TEST SUMMARY
-⚠️  WARNING: These tests use mocks - NOT real APIs
-For real API testing run: python3 integration_test.py
-==================================================
-Tests run: 12
-Failures: 0
-Errors: 0
-Success rate: 100.0%
+SMART API INTEGRATION TESTS
+============================================================
+Gemini API Key Available: ✅
+API Status: ⚠️  Quota Exceeded
+============================================================
+
+✅ Calculator tool working correctly
+✅ File operations working correctly  
+✅ Memory management working correctly
+⏭️  API-dependent tests skipped (quota exceeded)
+
+GUIDANCE:
+• API quota exceeded - this is normal for free tier
+• Non-API components are working correctly
+• Wait 24 hours or get new API key for full testing
 ```
 
-### Real Integration Tests (API Keys Required)
+### Legacy Mocked Tests (Reference Only)
+```bash
+python3 legacy_mocked_test.py
+```
+
+### Full Integration Tests (When API Available)
 ```bash
 python3 integration_test.py
 ```
@@ -57,7 +75,25 @@ Tavily API Key Available: ✅
 
 ## 📊 What Each Test Suite Covers
 
-### 🎭 **Mocked Unit Tests** (`unit_test.py`)
+### 🧠 **Smart Unit Tests** (`unit_test.py`) - **RECOMMENDED**
+
+| Test Category | What's Tested | Real or Adaptive |
+|---------------|---------------|------------------|
+| **API Status Check** | Real API availability and quota status | ✅ **Real** |
+| **Calculator Tool** | Mathematical calculations | ✅ **Real** |
+| **File Operations** | File creation, content verification | ✅ **Real** |
+| **Memory Management** | Conversation history, context tracking | ✅ **Real** |
+| **Agent Structure** | Component initialization, tool loading | ✅ **Real** |
+| **API-Dependent Features** | LLM calls, web search (when available) | 🔄 **Adaptive** |
+
+**Advantages:**
+- ✅ Tests real functionality where possible
+- ✅ Gracefully handles API limitations
+- ✅ Provides clear status reporting
+- ✅ Gives actionable guidance
+- ✅ Suitable for all environments
+
+### 🎭 **Legacy Mocked Tests** (`legacy_mocked_test.py`)
 
 | Test Category | What's Tested | Real or Mocked |
 |---------------|---------------|----------------|
@@ -71,6 +107,7 @@ Tavily API Key Available: ✅
 - ❌ No actual web searches
 - ❌ No real LLM responses
 - ❌ No end-to-end workflows
+- ❌ False confidence from mocked responses
 
 ### 🌐 **Integration Tests** (`integration_test.py`)
 
@@ -123,19 +160,25 @@ python3 -m unittest integration_test.TestRealAPIIntegration.test_real_gemini_llm
 
 ## 🎯 When to Use Each Test Type
 
-### Use **Mocked Tests** (`unit_test.py`) When:
+### Use **Smart Unit Tests** (`unit_test.py`) When:
+- ✅ **Primary testing** - recommended for all scenarios
 - ✅ Developing new features
 - ✅ Running CI/CD pipelines
 - ✅ Testing component structure
-- ✅ No API keys available
-- ✅ Need fast feedback
+- ✅ API keys may or may not be available
+- ✅ Need intelligent, adaptive testing
+- ✅ Want clear guidance on issues
 
-### Use **Integration Tests** (`integration_test.py`) When:
-- ✅ Validating real functionality
-- ✅ Before deployment
-- ✅ Testing API integrations
-- ✅ Verifying end-to-end workflows
-- ✅ Debugging real-world issues
+### Use **Legacy Mocked Tests** (`legacy_mocked_test.py`) When:
+- ⚠️ **Reference only** - not recommended for actual testing
+- 📚 Studying mocking patterns
+- 🔍 Understanding component structure
+
+### Use **Full Integration Tests** (`integration_test.py`) When:
+- ✅ API quota is definitely available
+- ✅ Comprehensive end-to-end validation needed
+- ✅ Debugging specific API integration issues
+- ✅ Before major deployments (when quota allows)
 
 ## 🚨 Common Issues and Solutions
 
@@ -181,11 +224,11 @@ test_real_gemini_llm_call ... skipped 'No Gemini API key available'
 ## 🎓 Best Practices
 
 ### For Development:
-1. **Start with mocked tests** for rapid iteration
-2. **Use integration tests** to verify real functionality
-3. **Run both test suites** before committing changes
-4. **Mock external dependencies** in unit tests
-5. **Test real APIs** in integration tests
+1. **Use smart unit tests** (`python3 unit_test.py`) as your primary testing
+2. **Check test output** for guidance on API issues
+3. **Run tests frequently** - they adapt to your environment
+4. **Use full integration tests** only when API quota available
+5. **Ignore legacy mocked tests** - they provide false confidence
 
 ### For CI/CD:
 1. **Always run mocked tests** (fast, no API keys needed)
@@ -237,10 +280,11 @@ Tests run: 8, Failures: 0, Errors: 0, Success rate: 100.0%
 
 ## 🎯 Summary
 
-- **`unit_test.py`**: Fast, mocked, structure validation
-- **`integration_test.py`**: Real APIs, end-to-end validation
-- **Both are important** for comprehensive testing
-- **Use mocked tests** for development
-- **Use integration tests** for deployment validation
+- **`unit_test.py`**: Smart, adaptive, real testing where possible - **USE THIS**
+- **`legacy_mocked_test.py`**: Mocked, reference only - **AVOID**
+- **`integration_test.py`**: Full real API testing - **USE WHEN QUOTA AVAILABLE**
+- **Smart tests are recommended** for all scenarios
+- **Legacy mocked tests** provide false confidence
+- **Full integration tests** for comprehensive validation when possible
 
-**Remember**: Mocked tests passing ≠ Real functionality working! Always run integration tests to verify actual API functionality.
+**Remember**: Smart tests give you real confidence by testing actual functionality while gracefully handling limitations!
