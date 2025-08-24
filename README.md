@@ -40,12 +40,18 @@ pip install -r requirements.txt
 ```
 
 ### 2. **Configuration**
-Update your Gemini API key in `config.py`:
-```python
-GEMINI_API_KEY = "your-gemini-api-key-here"
+Add your API keys to the `.env` file:
+```bash
+GEMINI_API_KEY=your-gemini-api-key-here
+TAVILY_API_KEY=your-tavily-api-key-here
 ```
 
-### 3. **Run the Agent**
+### 3. **Test the Setup**
+```bash
+python3 unit_test.py
+```
+
+### 4. **Run the Agent**
 ```bash
 python main.py
 ```
@@ -113,6 +119,16 @@ langchain-research-agent/
 
 ## 🔧 Technical Implementation
 
+### **Environment Configuration**
+```python
+# Automatic .env loading in config.py
+from dotenv import load_dotenv
+load_dotenv()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
+```
+
 ### **LangChain Agent Architecture**
 ```python
 # Professional ReAct agent with embedded tools
@@ -124,6 +140,16 @@ agent_executor = initialize_agent(
     max_iterations=10,
     handle_parsing_errors=True
 )
+```
+
+### **Smart Testing Architecture**
+```python
+# Quota-aware testing
+if "429 RESOURCE_EXHAUSTED" in response:
+    self.skipTest("API quota exceeded - expected behavior")
+else:
+    # Test real functionality
+    self.assertGreater(len(response), 0)
 ```
 
 ### **Gemini 2.5 Flash Integration**
@@ -253,17 +279,61 @@ history = agent.get_conversation_history()
 ## 🆘 Troubleshooting
 
 ### **Common Issues**
-- **API Rate Limits**: Gemini free tier has request limits - wait a moment between queries
-- **Unicode Errors**: Fixed in current version by removing problematic characters
-- **Tool Not Executing**: Fixed with enhanced prompting to prevent hallucination
 
-### **Verification**
-To verify tools are actually executing, look for debug output:
+#### **API Quota Exceeded (429 Error)**
+```
+429 RESOURCE_EXHAUSTED: You exceeded your current quota
+```
+**Solutions:**
+- Wait 24 hours for quota reset
+- Get a new Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
+- Run `python3 unit_test.py` - it handles quota limits gracefully
+
+#### **API Key Issues**
+```
+Gemini API Key Available: ❌
+```
+**Solutions:**
+- Add valid API key to `.env` file
+- Ensure `.env` file is in project root
+- Check API key permissions
+
+#### **Tool Not Executing**
+**Verification:** Look for debug output:
 ```
 [FILE TOOL] Executing: create_report:Title:Content
 [FILE TOOL] Creating report 'Title'
 [FILE TOOL] SUCCESS: Report 'Title' created at reports\Title_20250816_201552.md
 ```
+
+#### **Testing Issues**
+- **Mocked tests passing but real functionality broken**: Use `python3 unit_test.py` (smart tests)
+- **All tests failing**: Check API key and internet connection
+- **Some tests skipped**: Normal behavior when API quota exceeded
+
+## 🧪 Testing
+
+### **Smart Unit Tests**
+```bash
+python3 unit_test.py
+```
+Runs intelligent tests that:
+- ✅ Test non-API components (calculator, file ops, memory)
+- ⚠️  Gracefully handle API quota limits
+- 📊 Provide clear status reporting
+- 💡 Give helpful guidance for issues
+
+### **Legacy Mocked Tests** (Reference Only)
+```bash
+python3 legacy_mocked_test.py
+```
+Old mocked tests kept for reference - not recommended for actual testing.
+
+### **Full Integration Tests** (When API Available)
+```bash
+python3 integration_test.py
+```
+Comprehensive tests that make real API calls - use when quota available.
 
 ## 📄 Dependencies
 
@@ -273,6 +343,7 @@ langchain
 langchain-community  
 langchain-core
 langchain-google-genai
+python-dotenv
 ```
 
 ## 📚 Learn More
